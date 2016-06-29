@@ -80,7 +80,7 @@ class RecursiveHashTable {
         break // found empty spot. write here.
       }
 
-      if (!isLeaf(entry)) { // if not a leaf, recurse.
+      if (!RecursiveHashTable.isLeaf(entry)) { // if not a leaf, recurse.
         ht = this.getHT(path)
         continue
       }
@@ -131,6 +131,22 @@ class RecursiveHashTable {
   remove(name) {
     throw new Error("not implemented yet")
   }
+}
+
+// check if a node is a leaf, or an intermediate HT node.
+RecursiveHashTable.isLeaf = (node) => {
+  // if it's just a link, it's not a leaf, it's a HT node.
+  if (ipld.isLink(node)) {
+    return false
+  }
+
+  // if it's got n and v it's a leaf entry.
+  if (typeof(node.n) === 'string' && node.v) {
+    return true
+  }
+
+  // invariant violated. error.
+  throw new Error('invalid RecursiveHashTable entry: ' + node)
 }
 
 module.exports = RecursiveHashTable
